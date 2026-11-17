@@ -79,6 +79,7 @@ class _TvShortcutLayerState extends State<TvShortcutLayer> {
     }
     final controller = TvModeController.instance;
     final key = event.logicalKey;
+    debugPrint('[TV] key=$key controller.enabled=${controller.enabled} mode=${controller.mode}');
 
     if (!controller.enabled) {
       if (controller.mode == 0 && _isArrow(key)) {
@@ -124,15 +125,20 @@ class _TvShortcutLayerState extends State<TvShortcutLayer> {
 
   bool _kickStartFocus() {
     final primary = FocusManager.instance.primaryFocus;
-    if (primary != null && primary.context != null) {
-      // Focus already lives somewhere; default traversal handles it.
+    debugPrint('[TV] kick: primary=$primary scope=${primary is FocusScopeNode}');
+    if (primary != null &&
+        primary.context != null &&
+        primary is! FocusScopeNode) {
+      // Focus already lives on a real widget; default traversal handles it.
       return false;
     }
     final target = _findFirstFocusable(FocusManager.instance.rootScope);
+    debugPrint('[TV] kick target=$target');
     if (target == null) {
       return false;
     }
     target.requestFocus();
+    debugPrint('[TV] kicked, now primary=${FocusManager.instance.primaryFocus}');
     return true;
   }
 

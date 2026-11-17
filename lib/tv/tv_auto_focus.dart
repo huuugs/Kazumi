@@ -49,7 +49,6 @@ class _TvAutoFocusState extends State<TvAutoFocus> {
     }
     return null;
   }
-  }
 
   @override
   Widget build(BuildContext context) => widget.child;

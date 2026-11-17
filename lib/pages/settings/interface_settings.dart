@@ -5,6 +5,7 @@ import 'package:kazumi/bean/settings/settings_dropdown_tile.dart';
 import 'package:kazumi/bean/settings/settings_list.dart';
 import 'package:kazumi/modules/collect/collect_layout.dart';
 import 'package:kazumi/services/storage/storage.dart';
+import 'package:kazumi/tv/tv_mode.dart';
 import 'package:kazumi/utils/device.dart';
 
 class InterfaceSettingsPage extends StatefulWidget {
@@ -19,6 +20,9 @@ class _InterfaceSettingsPageState extends State<InterfaceSettingsPage> {
   late String defaultPage;
   late CollectLayout _defaultCollectLayout;
   bool _savingCollectLayout = false;
+  int _tvMode = GStorage.getSetting(SettingsKeys.tvMode);
+  bool _tvVirtualCursor =
+      GStorage.getSetting(SettingsKeys.tvVirtualCursorDefault);
   static const _exitBehaviorTitles = ['退出 Kazumi', '最小化至托盘', '每次都询问'];
   int _exitBehavior = GStorage.getSetting(SettingsKeys.exitBehavior)
       .clamp(0, _exitBehaviorTitles.length - 1);
@@ -121,6 +125,41 @@ class _InterfaceSettingsPageState extends State<InterfaceSettingsPage> {
                 ),
               ],
             ),
+          SettingsSection(
+            title: const Text('电视 / 遥控器'),
+            tiles: [
+              SettingsDropdownTile<int>(
+                leading: Icons.tv_rounded,
+                title: const Text('遥控器适配'),
+                description: const Text('开启后可用方向键移动焦点、OK 键确认；“自动”会在首次按方向键时启用'),
+                value: _tvMode,
+                options: const {0: '自动', 1: '开启', 2: '关闭'},
+                fallbackLabel: '自动',
+                onChanged: (value) async {
+                  setState(() => _tvMode = value);
+                  await TvModeController.instance.setMode(value);
+                },
+              ),
+              SettingsTile.switchTile(
+                leading: Icons.mouse_rounded,
+                onToggle: (value) async {
+                  _tvVirtualCursor = value ?? !_tvVirtualCursor;
+                  await TvModeController.instance
+                      .setVirtualCursorDefault(_tvVirtualCursor);
+                  setState(() {});
+                },
+                title: Text('虚拟鼠标'),
+                description: const Text('开启后可用虚拟鼠标；遥控器设置键可快速开关，方向键移动指针，OK 键点击'),
+                initialValue: _tvVirtualCursor,
+              ),
+              const SettingsTile(
+                leading: Icons.info_outline_rounded,
+                title: Text('使用提示'),
+                description: Text(
+                    '虚拟鼠标适合播放器手势、网页等无法用焦点到达的界面；列表和按钮可直接用方向键导航'),
+              ),
+            ],
+          ),
         ],
       ),
     );

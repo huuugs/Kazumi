@@ -6,6 +6,7 @@ import 'package:kazumi/bean/widget/embedded_native_control_area.dart';
 import 'package:kazumi/navigation.dart';
 import 'package:kazumi/pages/menu/route_visibility.dart';
 import 'package:kazumi/pages/router.dart';
+import 'package:kazumi/tv/tv_auto_focus.dart';
 
 class ScaffoldMenu extends StatefulWidget {
   const ScaffoldMenu({super.key, required this.location});
@@ -98,21 +99,23 @@ class _ScaffoldMenu extends State<ScaffoldMenu> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    return RouteVisibility(
-      isCovered: _isCovered,
-      child: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, _) {
-          if (!didPop) {
-            _handleSystemBack(context);
-          }
-        },
-        child: OrientationBuilder(
-          builder: (context, orientation) {
-            return orientation == Orientation.portrait
-                ? _bottomMenu(context, _selectedIndex)
-                : _sideMenu(context, _selectedIndex);
+    return TvAutoFocus(
+      child: RouteVisibility(
+        isCovered: _isCovered,
+        child: PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop) {
+              _handleSystemBack(context);
+            }
           },
+          child: OrientationBuilder(
+            builder: (context, orientation) {
+              return orientation == Orientation.portrait
+                  ? _bottomMenu(context, _selectedIndex)
+                  : _sideMenu(context, _selectedIndex);
+            },
+          ),
         ),
       ),
     );

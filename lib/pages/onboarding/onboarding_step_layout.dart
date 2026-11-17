@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kazumi/bean/widget/state_presentation.dart';
+import 'package:kazumi/tv/tv_auto_focus.dart';
 import 'package:material_new_shapes/material_new_shapes.dart';
 
 /// Keeps the rule catalog lazy within the responsive onboarding scroll surface.
@@ -119,20 +120,24 @@ class OnboardingStepLayout extends StatelessWidget {
               ),
             ],
           );
-          if (!wide) return scrollView;
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: constraints.maxWidth * 0.34,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(top: 40, bottom: 24),
-                  child: _intro(context, wide: true),
+          if (!wide) {
+            return TvAutoFocus(child: scrollView);
+          }
+          return TvAutoFocus(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: constraints.maxWidth * 0.34,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(top: 40, bottom: 24),
+                    child: _intro(context, wide: true),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 48),
-              Expanded(child: scrollView),
-            ],
+                const SizedBox(width: 48),
+                Expanded(child: scrollView),
+              ],
+            ),
           );
         },
       );

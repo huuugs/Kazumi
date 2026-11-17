@@ -14,6 +14,8 @@ import 'package:window_manager/window_manager.dart';
 import 'package:kazumi/bean/dialog/dialog_helper.dart';
 import 'package:kazumi/bean/dialog/exit_confirmation_dialog.dart';
 import 'package:kazumi/bean/settings/theme_provider.dart';
+import 'package:kazumi/tv/tv_mode.dart';
+import 'package:kazumi/tv/tv_shortcuts.dart';
 import 'package:kazumi/navigation.dart';
 import 'package:kazumi/utils/constants.dart';
 import 'package:kazumi/utils/device.dart';
@@ -43,6 +45,7 @@ class _AppWidgetState extends State<AppWidget>
   }
 
   Future<void> _initializePlatformIntegrations() async {
+    TvModeController.instance.load();
     if (isDesktop()) {
       await windowManager.setPreventClose(true);
       await TrayService.initialize();
@@ -295,6 +298,8 @@ class _AppWidgetState extends State<AppWidget>
           themeMode: themeProvider.themeMode,
           scaffoldMessengerKey: rootScaffoldMessengerKey,
           routerConfig: ModularApp.routerConfigOf(context),
+          builder: (context, child) =>
+              TvShortcutLayer(child: child ?? const SizedBox.shrink()),
         );
       },
     );

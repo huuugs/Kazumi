@@ -58,6 +58,16 @@ class SettingsKeys {
     true,
     group: SettingGroup.misc,
   );
+  static const tvMode = SettingKey<int>(
+    'tvMode',
+    0,
+    group: SettingGroup.interface,
+  );
+  static const tvVirtualCursorDefault = SettingKey<bool>(
+    'tvVirtualCursorDefault',
+    false,
+    group: SettingGroup.interface,
+  );
   static const autoUpdate = SettingKey<bool>(
     _SettingBoxKey.autoUpdate,
     true,

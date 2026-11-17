@@ -131,7 +131,7 @@ class _TvShortcutLayerState extends State<TvShortcutLayer> {
     final rootScope = FocusManager.instance.rootScope;
     final scopeContext = rootScope.context;
     if (scopeContext == null) return false;
-    FocusTraversalGroup.of(scopeContext).findFirstFocus()?.requestFocus();
+    FocusTraversalGroup.of(scopeContext).findFirstFocus(rootScope)?.requestFocus();
     return FocusManager.instance.primaryFocus != null;
   }
 

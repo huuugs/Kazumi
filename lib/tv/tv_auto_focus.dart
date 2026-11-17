@@ -27,11 +27,10 @@ class _TvAutoFocusState extends State<TvAutoFocus> {
     final primary = FocusManager.instance.primaryFocus;
     if (primary != null && primary.context != null) return;
     final context = this.context;
-    final scope = FocusScope.maybeOf(context);
-    if (scope == null || scope.context == null) return;
-    FocusTraversalGroup.of(scope.context!)
-        .findFirstFocus()
-        ?.requestFocus();
+    final scope = FocusScope.of(context);
+    final scopeContext = scope.context;
+    if (scopeContext == null) return;
+    FocusTraversalGroup.of(scopeContext).findFirstFocus(scope)?.requestFocus();
   }
 
   @override

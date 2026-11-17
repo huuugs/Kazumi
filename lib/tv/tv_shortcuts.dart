@@ -128,11 +128,32 @@ class _TvShortcutLayerState extends State<TvShortcutLayer> {
       // Focus already lives somewhere; default traversal handles it.
       return false;
     }
-    final rootScope = FocusManager.instance.rootScope;
-    final scopeContext = rootScope.context;
-    if (scopeContext == null) return false;
-    FocusTraversalGroup.of(scopeContext).findFirstFocus(rootScope)?.requestFocus();
-    return FocusManager.instance.primaryFocus != null;
+    final target = _findFirstFocusable(FocusManager.instance.rootScope);
+    if (target == null) {
+      return false;
+    }
+    target.requestFocus();
+    return true;
+  }
+
+  /// Walks the focus tree in registration order and returns the first node
+  /// that can actually take focus. The root scope has no BuildContext, so
+  /// policy-based lookup cannot be used for the initial ignition.
+  FocusNode? _findFirstFocusable(FocusScopeNode scope) {
+    for (final child in scope.children) {
+      if (child is FocusScopeNode) {
+        if (!child.canRequestFocus) {
+          continue;
+        }
+        final found = _findFirstFocusable(child);
+        if (found != null) {
+          return found;
+        }
+      } else if (child.canRequestFocus && child.context != null) {
+        return child;
+      }
+    }
+    return null;
   }
 
   Offset _clampCursor(Offset position) {

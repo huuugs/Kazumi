@@ -203,9 +203,17 @@ class _TvShortcutLayerState extends State<TvShortcutLayer> {
     return LayoutBuilder(
       builder: (context, constraints) {
         _ensureCursorInitialized(constraints);
+        // TV sets commonly crop the outer edges of the picture (overscan).
+        // Inset the whole app so nothing interactive can hide behind the bezel.
+        final content = TvModeController.instance.enabled
+            ? Padding(
+                padding: const EdgeInsets.all(18),
+                child: widget.child,
+              )
+            : widget.child;
         return Stack(
           children: [
-            Positioned.fill(child: widget.child),
+            Positioned.fill(child: content),
             if (TvModeController.instance.virtualCursorOn)
               Positioned(
                 left: _cursor.dx,
